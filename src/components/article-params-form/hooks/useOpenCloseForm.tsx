@@ -1,33 +1,28 @@
 import { useEffect } from 'react';
 
 type UseOpenCloseFormProps = {
-	isOpen: boolean;
-	setIsOpen: (value: boolean) => void;
-	saveRef: React.RefObject<HTMLDivElement>;
+  isOpen: boolean;
+  setIsOpen: (value: boolean) => void;
+  rootRef: React.RefObject<HTMLDivElement>;
 };
 
-export const useOpenCloseForm = ({
-	isOpen,
-	setIsOpen,
-	saveRef,
-}: UseOpenCloseFormProps) => {
-	function handleArrowButtonClick() {
-		setIsOpen(!isOpen);
-	}
+export const useOpenCloseForm = ({ isOpen, setIsOpen, rootRef }: UseOpenCloseFormProps) => {
+  function handleArrowBtnClick() {
+    setIsOpen(!isOpen);
+  }
 
-	useEffect(() => {
-		function handleOutsideClick(event: MouseEvent) {
-			const { target } = event;
-			if (target instanceof Node && !saveRef.current?.contains(target)) {
-				setIsOpen(false);
-			}
-		}
+  useEffect(() => {
+    function handleOutsideClick(event: MouseEvent) {
+      const { target } = event;
+      if (target instanceof Node && !rootRef.current?.contains(target)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, [isOpen, setIsOpen, rootRef]);
 
-		document.addEventListener('mousedown', handleOutsideClick);
-		return () => {
-			document.removeEventListener('mousedown', handleOutsideClick);
-		};
-	}, [isOpen, setIsOpen, saveRef]);
-
-	return handleArrowButtonClick;
+  return handleArrowBtnClick;
 };
