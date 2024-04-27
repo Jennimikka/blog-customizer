@@ -1,7 +1,6 @@
 import { ArrowButton } from 'components/arrow-button';
 import { Button } from 'components/button';
-import { useState, useRef, FormEvent } from 'react';
-import { useOpenCloseForm } from './hooks/useOpenCloseForm';
+import { useState, useEffect, useRef, FormEvent } from 'react';
 import {
   ArticleStateType,
   defaultArticleState,
@@ -10,7 +9,8 @@ import {
   fontColors,
   backgroundColors,
   contentWidthArr,
-  fontSizeOptions
+  fontSizeOptions,
+  UseOpenCloseFormProps
 } from 'src/constants/articleProps';
 import styles from './ArticleParamsForm.module.scss';
 import { RadioGroup } from '../radio-group';
@@ -28,6 +28,27 @@ export const ArticleParamsForm = ({ params, setParams }: ArticleParamsFormProps)
   const [isOpen, setIsOpen] = useState(false);
   const [state, setState] = useState(params);
   const rootRef = useRef<HTMLDivElement | null>(null);
+
+  const useOpenCloseForm = ({ isOpen, setIsOpen, rootRef }: UseOpenCloseFormProps) => {
+    function handleArrowBtnClick() {
+      setIsOpen(!isOpen);
+    }
+
+    useEffect(() => {
+      function handleOutsideClick(event: MouseEvent) {
+        const { target } = event;
+        if (target instanceof Node && !rootRef.current?.contains(target)) {
+          setIsOpen(false);
+        }
+      }
+      document.addEventListener('mousedown', handleOutsideClick);
+      return () => {
+        document.removeEventListener('mousedown', handleOutsideClick);
+      };
+    }, [isOpen, setIsOpen, rootRef]);
+
+    return handleArrowBtnClick;
+  };
 
   const handleArrowBtnClick = useOpenCloseForm({ isOpen, setIsOpen, rootRef });
 
