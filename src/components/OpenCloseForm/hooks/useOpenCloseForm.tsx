@@ -1,5 +1,5 @@
 import { useEffect, useCallback } from 'react';
-
+//функция открытия-закрытия
 type UseOpenCloseFormProps = {
   isOpen: boolean;
   setIsOpen: (value: boolean) => void;
