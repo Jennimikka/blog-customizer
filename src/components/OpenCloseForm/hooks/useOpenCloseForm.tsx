@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useCallback } from 'react';
 
 type UseOpenCloseFormProps = {
   isOpen: boolean;
@@ -7,24 +7,22 @@ type UseOpenCloseFormProps = {
 };
 
 export const useOpenCloseForm = ({ isOpen, setIsOpen, rootRef }: UseOpenCloseFormProps) => {
-  useEffect(() => {
-    const handleOutsideClick = (event: MouseEvent) => {
-      const { target } = event;
-      if (rootRef.current && !rootRef.current.contains(target as Node)) {
-        setIsOpen(false);
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener('mousedown', handleOutsideClick);
-    } else {
-      document.removeEventListener('mousedown', handleOutsideClick);
+  const handleOutsideClick = (event: MouseEvent) => {
+    const { target } = event;
+    if (rootRef.current && !rootRef.current.contains(target as Node)) {
+      setIsOpen(false);
     }
+  };
 
-    return () => {
-      document.removeEventListener('mousedown', handleOutsideClick);
-    };
-  }, [isOpen, rootRef, setIsOpen]);
+  if (isOpen) {
+    document.addEventListener('mousedown', handleOutsideClick);
+  } else {
+    document.removeEventListener('mousedown', handleOutsideClick);
+  }
+
+  return () => {
+    document.removeEventListener('mousedown', handleOutsideClick);
+  };
 
   return useCallback(() => {}, []); // Возвращаем пустую функцию
 };
