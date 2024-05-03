@@ -29,24 +29,21 @@ export const ArticleParamsForm = ({ params, setParams }: ArticleParamsFormProps)
   const [state, setState] = useState(params);
   const rootRef = useRef<HTMLDivElement | null>(null);
 
-  const handleArrowBtnClick = useOpenCloseForm({ isOpen, setIsOpen, rootRef });
+  const handleArrowBtnClick = () => {
+    setIsOpen(!isOpen);
+  };
+
+  useOpenCloseForm({ isOpen, setIsOpen, rootRef });
 
   function handleSubmitChanges(value: OptionType) {
-    if (fontFamilyOptions.includes(value)) {
-      setState({ ...state, fontFamilyOption: value });
-    }
-    if (fontColors.includes(value)) {
-      setState({ ...state, fontColor: value });
-    }
-    if (backgroundColors.includes(value)) {
-      setState({ ...state, backgroundColor: value });
-    }
-    if (contentWidthArr.includes(value)) {
-      setState({ ...state, contentWidth: value });
-    }
-    if (fontSizeOptions.includes(value)) {
-      setState({ ...state, fontSizeOption: value });
-    }
+    const updatedState = {
+      fontFamilyOption: fontFamilyOptions.includes(value) ? value : state.fontFamilyOption,
+      fontColor: fontColors.includes(value) ? value : state.fontColor,
+      backgroundColor: backgroundColors.includes(value) ? value : state.backgroundColor,
+      contentWidth: contentWidthArr.includes(value) ? value : state.contentWidth,
+      fontSizeOption: fontSizeOptions.includes(value) ? value : state.fontSizeOption
+    };
+    setState(updatedState);
   }
 
   const submitSettings = (event: FormEvent<HTMLFormElement>) => {
@@ -60,7 +57,7 @@ export const ArticleParamsForm = ({ params, setParams }: ArticleParamsFormProps)
   };
 
   return (
-    <div ref={rootRef}>
+    <div ref={rootRef} className={styles.wrapper}>
       <ArrowButton onClick={handleArrowBtnClick} isContainerOpen={isOpen} />
       <aside className={clsx(styles.container, isOpen && styles.container_open)}>
         <form className={styles.form} onSubmit={submitSettings} onReset={resetSettings}>

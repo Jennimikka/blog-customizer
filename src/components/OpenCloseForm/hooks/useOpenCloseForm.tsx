@@ -1,5 +1,5 @@
 import { useEffect, useCallback } from 'react';
-//функция открытия-закрытия
+
 type UseOpenCloseFormProps = {
   isOpen: boolean;
   setIsOpen: (value: boolean) => void;
@@ -7,30 +7,24 @@ type UseOpenCloseFormProps = {
 };
 
 export const useOpenCloseForm = ({ isOpen, setIsOpen, rootRef }: UseOpenCloseFormProps) => {
-  const handleArrowBtnClick = useCallback(() => {
-    setIsOpen(!isOpen);
-  }, [isOpen, setIsOpen]);
-
-  const handleOutsideClick = useCallback(
-    (event: MouseEvent) => {
+  useEffect(() => {
+    const handleOutsideClick = (event: MouseEvent) => {
       const { target } = event;
       if (rootRef.current && !rootRef.current.contains(target as Node)) {
         setIsOpen(false);
       }
-    },
-    [rootRef, setIsOpen]
-  );
-
-  useEffect(() => {
-    const handleMouseDown = (event: MouseEvent) => {
-      handleOutsideClick(event);
     };
 
-    document.addEventListener('mousedown', handleMouseDown);
+    if (isOpen) {
+      document.addEventListener('mousedown', handleOutsideClick);
+    } else {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    }
+
     return () => {
-      document.removeEventListener('mousedown', handleMouseDown);
+      document.removeEventListener('mousedown', handleOutsideClick);
     };
-  }, [handleOutsideClick]);
+  }, [isOpen, rootRef, setIsOpen]);
 
-  return handleArrowBtnClick;
+  return useCallback(() => {}, []); // Возвращаем пустую функцию
 };
