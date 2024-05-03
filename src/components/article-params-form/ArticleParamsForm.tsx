@@ -1,7 +1,6 @@
 import { ArrowButton } from 'components/arrow-button';
 import { Button } from 'components/button';
-import { useState, useEffect, useRef, FormEvent } from 'react';
-import { useOpenCloseForm } from '../OpenCloseForm/hooks/useOpenCloseForm';
+import { useState, useRef, FormEvent } from 'react';
 import {
   ArticleStateType,
   defaultArticleState,
@@ -18,6 +17,7 @@ import { Select } from '../select';
 import { Separator } from '../separator';
 import { Text } from '../text';
 import clsx from 'clsx';
+import { useOutsideClickClose } from '../select/hooks/useOutsideClickClose';
 
 type ArticleParamsFormProps = {
   params: ArticleStateType;
@@ -29,11 +29,15 @@ export const ArticleParamsForm = ({ params, setParams }: ArticleParamsFormProps)
   const [state, setState] = useState(params);
   const rootRef = useRef<HTMLDivElement | null>(null);
 
-  const handleArrowBtnClick = () => {
-    setIsOpen(!isOpen);
-  };
-
-  useOpenCloseForm({ isOpen, setIsOpen, rootRef });
+  function handleArrowBtnClick() {
+    setIsOpen(prevState => !prevState);
+  }
+  useOutsideClickClose({
+    isOpen,
+    rootRef,
+    onClose: handleArrowBtnClick,
+    onChange: setIsOpen
+  });
 
   function handleSubmitChanges(value: OptionType) {
     const updatedState = {
@@ -58,7 +62,7 @@ export const ArticleParamsForm = ({ params, setParams }: ArticleParamsFormProps)
 
   return (
     <div ref={rootRef} className={styles.wrapper}>
-      <ArrowButton onClick={handleArrowBtnClick} isContainerOpen={isOpen} />
+      <ArrowButton onClick={handleArrowBtnClick} isOpen={isOpen} />
       <aside className={clsx(styles.container, isOpen && styles.container_open)}>
         <form className={styles.form} onSubmit={submitSettings} onReset={resetSettings}>
           <Text size={31} weight={800} uppercase={true}>

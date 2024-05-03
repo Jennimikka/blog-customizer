@@ -15,14 +15,6 @@
 
 }
 
-.container:hover {
-	background-color: #FFD700;
-  }
-
-.container::pressed {
-	background-color: #2F4F4F;
-}
-
 .container_open {
 	transform: translate(616px);
 }

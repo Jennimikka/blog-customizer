@@ -10,28 +10,27 @@ const domNode = document.getElementById('root') as HTMLDivElement;
 const root = createRoot(domNode);
 
 const App = () => {
-  const [articleStyles, setArticleStyles] = useState(defaultArticleState);
-  return (
-    <div
-      className={styles.main}
-      style={
-        {
-          '--font-family': articleStyles.fontFamilyOption.value,
-          '--font-size': articleStyles.fontSizeOption.value,
-          '--font-color': articleStyles.fontColor.value,
-          '--container-width': articleStyles.contentWidth.value,
-          '--bg-color': articleStyles.backgroundColor.value
-        } as CSSProperties
-      }
-    >
-      <ArticleParamsForm params={articleStyles} setParams={setArticleStyles} />
-      <Article />
-    </div>
-  );
+	const [articleStyles, setArticleStyles] = useState(defaultArticleState);
+	return (
+		<div
+			className={styles.main}
+			style={
+				{
+					'--font-family': articleStyles.fontFamilyOption.value,
+					'--font-size': articleStyles.fontSizeOption.value,
+					'--font-color': articleStyles.fontColor.value,
+					'--container-width': articleStyles.contentWidth.value,
+					'--bg-color': articleStyles.backgroundColor.value,
+				} as CSSProperties
+			}>
+			<ArticleParamsForm params={articleStyles} setParams={setArticleStyles} />
+			<Article />
+		</div>
+	);
 };
 
 root.render(
-  <StrictMode>
-    <App />
-  </StrictMode>
+	<StrictMode>
+		<App />
+	</StrictMode>
 );

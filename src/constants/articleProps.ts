@@ -180,6 +180,6 @@ export type UseOpenCloseFormProps = {
 	isOpen: boolean;
 	setIsOpen: (value: boolean) => void;
 	rootRef: React.RefObject<HTMLDivElement>;
-  };
+};
 
 export type ArticleStateType = typeof defaultArticleState;
