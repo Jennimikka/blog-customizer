@@ -4,7 +4,6 @@ import { useState, useRef, FormEvent } from 'react';
 import {
   ArticleStateType,
   defaultArticleState,
-  OptionType,
   fontFamilyOptions,
   fontColors,
   backgroundColors,
@@ -15,7 +14,6 @@ import styles from './ArticleParamsForm.module.scss';
 import { RadioGroup } from '../radio-group';
 import { Select } from '../select';
 import { Separator } from '../separator';
-import { Text } from '../text';
 import clsx from 'clsx';
 import { useOutsideClickClose } from '../select/hooks/useOutsideClickClose';
 
@@ -26,7 +24,7 @@ type ArticleParamsFormProps = {
 
 export const ArticleParamsForm = ({ params, setParams }: ArticleParamsFormProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [state, setState] = useState(params);
+
   const rootRef = useRef<HTMLDivElement | null>(null);
 
   function handleArrowBtnClick() {
@@ -39,24 +37,33 @@ export const ArticleParamsForm = ({ params, setParams }: ArticleParamsFormProps)
     onChange: setIsOpen
   });
 
-  function handleSubmitChanges(value: OptionType) {
-    const updatedState = {
-      fontFamilyOption: fontFamilyOptions.includes(value) ? value : state.fontFamilyOption,
-      fontColor: fontColors.includes(value) ? value : state.fontColor,
-      backgroundColor: backgroundColors.includes(value) ? value : state.backgroundColor,
-      contentWidth: contentWidthArr.includes(value) ? value : state.contentWidth,
-      fontSizeOption: fontSizeOptions.includes(value) ? value : state.fontSizeOption
-    };
-    setState(updatedState);
-  }
+  const [fontFamilyOption, setFontFamilyOption] = useState(params.fontFamilyOption);
 
-  const submitSettings = (event: FormEvent<HTMLFormElement>) => {
+  const [fontSizeOption, setFontSizeOption] = useState(params.fontSizeOption);
+
+  const [fontColor, setFontColor] = useState(params.fontColor);
+
+  const [backgroundColor, setBackground] = useState(params.backgroundColor);
+
+  const [contentWidth, setContentWidth] = useState(params.contentWidth);
+
+  const handleSubmitSettings = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setParams(state);
+    setParams({
+      fontFamilyOption,
+      fontSizeOption,
+      fontColor,
+      backgroundColor,
+      contentWidth
+    });
   };
 
-  const resetSettings = () => {
-    setState(defaultArticleState);
+  const handleResetSettings = () => {
+    setFontFamilyOption(defaultArticleState.fontFamilyOption);
+    setFontSizeOption(defaultArticleState.fontSizeOption);
+    setFontColor(defaultArticleState.fontColor);
+    setBackground(defaultArticleState.backgroundColor);
+    setContentWidth(defaultArticleState.contentWidth);
     setParams(defaultArticleState);
   };
 
@@ -64,41 +71,39 @@ export const ArticleParamsForm = ({ params, setParams }: ArticleParamsFormProps)
     <div ref={rootRef} className={styles.wrapper}>
       <ArrowButton onClick={handleArrowBtnClick} isOpen={isOpen} />
       <aside className={clsx(styles.container, isOpen && styles.container_open)}>
-        <form className={styles.form} onSubmit={submitSettings} onReset={resetSettings}>
-          <Text size={31} weight={800} uppercase={true}>
-            {'Задайте параметры'}
-          </Text>
+        <form className={styles.form} onSubmit={handleSubmitSettings} onReset={handleResetSettings}>
+          <h2 className={styles.title}>Задайте параметры</h2>
           <Select
-            selected={state.fontFamilyOption}
+            selected={fontFamilyOption}
             options={fontFamilyOptions}
             title={'Шрифт'}
-            onChange={handleSubmitChanges}
+            onChange={setFontFamilyOption}
           />
           <RadioGroup
             name={'fontSize'}
-            selected={state.fontSizeOption}
+            selected={fontSizeOption}
             options={fontSizeOptions}
             title={'Размер шрифта'}
-            onChange={handleSubmitChanges}
+            onChange={setFontSizeOption}
           />
           <Select
-            selected={state.fontColor}
+            selected={fontColor}
             options={fontColors}
             title={'Цвет шрифта'}
-            onChange={handleSubmitChanges}
+            onChange={setFontColor}
           />
           <Separator />
           <Select
-            selected={state.backgroundColor}
+            selected={backgroundColor}
             options={backgroundColors}
             title={'Цвет фона'}
-            onChange={handleSubmitChanges}
+            onChange={setBackground}
           />
           <Select
-            selected={state.contentWidth}
+            selected={contentWidth}
             options={contentWidthArr}
             title={'Ширина контента'}
-            onChange={handleSubmitChanges}
+            onChange={setContentWidth}
           />
           <div className={styles.bottomContainer}>
             <Button title="Сбросить" type="reset" />
